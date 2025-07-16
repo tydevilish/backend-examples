@@ -51,9 +51,9 @@ export async function POST(req) {
         );
 
         if (existingUser.rowCount > 0) {
-            return NextResponse.json(
-                { message: "ชื่อผู้ใช้นี้มีคนใช้แล้ว" },
-                { status: 400 }
+            return NextResponse.json({
+                message: "ชื่อผู้ใช้นี้มีคนใช้แล้ว"
+            }, { status: 400 }
             );
         }
 
@@ -77,15 +77,16 @@ export async function POST(req) {
         const result = await pool.query(query, values);
         const userId = result.rows[0].id;
 
-        return NextResponse.json(
-            { message: "ลงทะเบียนสำเร็จ", userId },
-            { status: 200 }
+        return NextResponse.json({
+            message: "ลงทะเบียนสำเร็จ",
+            userId
+        }, { status: 200 }
         );
     } catch (error) {
         console.error("Database error:", error);
-        return NextResponse.json(
-            { message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" },
-            { status: 500 }
+        return NextResponse.json({
+            message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"
+        }, { status: 500 }
         );
     }
 }
