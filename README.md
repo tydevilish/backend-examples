@@ -12,3 +12,10 @@ data
 
 username
 password
+
+
+--------
+
+pg
+jsonwebtoken
+bcrypt
