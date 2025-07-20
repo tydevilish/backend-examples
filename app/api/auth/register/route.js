@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import bcrypt from "bcrypt";
 
 export async function POST(req) {
     const data = await req.json();
@@ -57,6 +58,8 @@ export async function POST(req) {
             );
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10)
+
         const query = `
       INSERT INTO users (username, password, title, first_name, last_name, address, gender, birthdate)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -65,7 +68,7 @@ export async function POST(req) {
 
         const values = [
             username,
-            password,
+            hashedPassword,
             title,
             firstName,
             lastName,

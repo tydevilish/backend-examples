@@ -1,16 +1,23 @@
-import { NextResponse } from "next/server";
+import {
+    NextResponse
+} from "next/server";
 import pool from "@/lib/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function POST(req) {
     try {
-        const { username, password } = await req.json();
+        const {
+            username,
+            password
+        } = await req.json();
 
         if (!username || !password) {
             return NextResponse.json({
                 message: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน"
-            }, { status: 400 });
+            }, {
+                status: 400
+            });
         }
 
         const userResult = await pool.query(
@@ -21,7 +28,9 @@ export async function POST(req) {
         if (userResult.rowCount === 0) {
             return NextResponse.json({
                 message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
-            }, { status: 401 });
+            }, {
+                status: 401
+            });
         }
 
         const user = userResult.rows[0];
@@ -30,26 +39,33 @@ export async function POST(req) {
         if (!isMatch) {
             return NextResponse.json({
                 message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
-            }, { status: 401 });
+            }, {
+                status: 401
+            });
         }
 
-        const token = jwt.sign(
-            {
+        const token = jwt.sign({
                 userId: user.id,
                 username: user.username,
             },
-            JWT_SECRET,
-            { expiresIn: "7d" }
+            process.env.JWT_SECRET, {
+                expiresIn: "7d"
+            }
         );
+
 
         return NextResponse.json({
             token,
             username: user.username
-        }, { status: 200 });
+        }, {
+            status: 200
+        });
     } catch (error) {
         console.error(error);
         return NextResponse.json({
             message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"
-        }, { status: 500 });
+        }, {
+            status: 500
+        });
     }
 }
